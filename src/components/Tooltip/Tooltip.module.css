@@ -1,0 +1,29 @@
+@import '../../styles/tokens.css';
+
+.trigger {
+  display: inline-flex;
+}
+
+.tooltip {
+  pointer-events: none;
+  max-width: 240px;
+  padding: var(--tf-space-2) var(--tf-space-3);
+  border-radius: var(--tf-radius-sm);
+  background-color: var(--tf-text-primary);
+  color: var(--tf-white);
+  font-family: var(--tf-font-family);
+  font-size: var(--tf-text-caption);
+  font-weight: var(--tf-weight-medium);
+  line-height: var(--tf-leading-caption);
+  box-shadow: var(--tf-shadow-md);
+  animation: tf-tooltip-in var(--tf-duration-fast) var(--tf-ease-out);
+}
+
+@keyframes tf-tooltip-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

@@ -1,0 +1,104 @@
+@import '../../styles/tokens.css';
+
+.card {
+  padding: var(--tf-space-4);
+}
+
+.interactive {
+  cursor: pointer;
+}
+
+.interactive:hover {
+  border-color: var(--tf-blue-200);
+  box-shadow: var(--tf-shadow-md);
+}
+
+.interactive:focus-visible {
+  outline: none;
+  box-shadow: var(--tf-focus-ring);
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tf-space-1);
+}
+
+.title {
+  font-size: var(--tf-text-body);
+  font-weight: var(--tf-weight-semibold);
+  line-height: var(--tf-leading-body);
+  color: var(--tf-text-primary);
+  margin: 0;
+}
+
+.project {
+  font-size: var(--tf-text-body-small);
+  line-height: var(--tf-leading-body-small);
+  color: var(--tf-text-secondary);
+}
+
+.bottom {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--tf-space-3);
+  margin-top: var(--tf-space-4);
+  flex-wrap: wrap;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tf-space-2);
+  min-width: 0;
+}
+
+.assignee {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tf-space-2);
+}
+
+.assigneeName {
+  font-size: var(--tf-text-body-small);
+  line-height: var(--tf-leading-body-small);
+  color: var(--tf-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.unassigned {
+  font-size: var(--tf-text-body-small);
+  color: var(--tf-text-muted);
+}
+
+.dueDate {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tf-space-1);
+  font-size: var(--tf-text-body-small);
+  line-height: var(--tf-leading-body-small);
+  color: var(--tf-text-secondary);
+}
+
+.dueDate svg {
+  color: var(--tf-text-muted);
+}
+
+.overdue {
+  color: var(--tf-error);
+  font-weight: var(--tf-weight-medium);
+}
+
+.overdue svg {
+  color: var(--tf-error);
+}
+
+.badges {
+  display: flex;
+  align-items: center;
+  gap: var(--tf-space-2);
+  flex-wrap: wrap;
+}

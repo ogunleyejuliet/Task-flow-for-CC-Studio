@@ -1,0 +1,189 @@
+@import '../../styles/tokens.css';
+
+.base {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tf-space-2);
+  margin: 0;
+  border: var(--tf-border-width) solid transparent;
+  border-radius: var(--tf-radius-md);
+  font-family: inherit;
+  font-size: var(--tf-text-button);
+  font-weight: var(--tf-weight-semibold);
+  line-height: var(--tf-leading-button);
+  letter-spacing: var(--tf-tracking-normal);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+  transition:
+    background-color var(--tf-duration-fast) var(--tf-ease-in-out),
+    border-color var(--tf-duration-fast) var(--tf-ease-in-out),
+    color var(--tf-duration-fast) var(--tf-ease-in-out),
+    box-shadow var(--tf-duration-fast) var(--tf-ease-in-out);
+}
+
+.base:disabled {
+  cursor: not-allowed;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tf-space-1);
+}
+
+/* Shared focus ring. */
+.base:focus-visible {
+  outline: none;
+  box-shadow: var(--tf-focus-ring);
+}
+
+/* ---- Sizes ------------------------------------------------------------- */
+.sm {
+  height: var(--tf-control-height-sm);
+  padding: 0 var(--tf-space-3);
+  gap: var(--tf-space-1);
+  font-size: 13px;
+}
+
+.md {
+  height: var(--tf-control-height);
+  padding: 0 var(--tf-space-4);
+}
+
+.lg {
+  height: var(--tf-control-height-lg);
+  padding: 0 var(--tf-space-5);
+}
+
+.iconOnly {
+  padding: 0;
+  aspect-ratio: 1;
+  width: auto;
+}
+
+.iconOnly.sm {
+  width: var(--tf-control-height-sm);
+}
+
+.iconOnly.md {
+  width: var(--tf-control-height);
+}
+
+.iconOnly.lg {
+  width: var(--tf-control-height-lg);
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+/* ---- Variants ----------------------------------------------------------- */
+
+/* Primary — the most important action. */
+.primary {
+  background-color: var(--tf-blue-700);
+  color: var(--tf-white);
+  box-shadow: var(--tf-shadow-sm);
+}
+
+.primary:hover:not(:disabled) {
+  background-color: var(--tf-blue-700);
+  filter: brightness(1.12);
+}
+
+.primary:active:not(:disabled) {
+  filter: brightness(0.95);
+}
+
+.primary:disabled {
+  background-color: var(--tf-neutral-100);
+  color: var(--tf-text-muted);
+  box-shadow: none;
+}
+
+/* Secondary — pairs with primary; white surface + border. */
+.secondary {
+  background-color: var(--tf-white);
+  border-color: var(--tf-border-strong);
+  color: var(--tf-text-primary);
+  box-shadow: var(--tf-shadow-sm);
+}
+
+.secondary:hover:not(:disabled) {
+  background-color: var(--tf-neutral-50);
+  border-color: var(--tf-text-muted);
+}
+
+.secondary:active:not(:disabled) {
+  background-color: var(--tf-neutral-100);
+}
+
+.secondary:disabled {
+  background-color: var(--tf-white);
+  border-color: var(--tf-border);
+  color: var(--tf-text-muted);
+  box-shadow: none;
+}
+
+/* Tertiary — transparent, emphasis via color. */
+.tertiary {
+  background-color: transparent;
+  color: var(--tf-blue-700);
+  box-shadow: none;
+}
+
+.tertiary:hover:not(:disabled) {
+  background-color: rgb(47 109 181 / 0.08);
+}
+
+.tertiary:active:not(:disabled) {
+  background-color: rgb(47 109 181 / 0.14);
+}
+
+.tertiary:disabled {
+  color: var(--tf-text-muted);
+  background-color: transparent;
+}
+
+/* Destructive — semantic error for irreversible actions. */
+.destructive {
+  background-color: var(--tf-white);
+  border-color: var(--tf-error-border);
+  color: var(--tf-error);
+  box-shadow: none;
+}
+
+.destructive:hover:not(:disabled) {
+  background-color: var(--tf-error-tint);
+  border-color: var(--tf-error);
+}
+
+.destructive:active:not(:disabled) {
+  background-color: rgb(220 38 38 / 0.12);
+}
+
+.destructive.solid {
+  background-color: var(--tf-error);
+  border-color: var(--tf-error);
+  color: var(--tf-white);
+}
+
+.destructive:disabled {
+  background-color: var(--tf-white);
+  border-color: var(--tf-border);
+  color: var(--tf-text-muted);
+  box-shadow: none;
+}
+
+/* ---- Loading ------------------------------------------------------------- */
+.loading {
+  cursor: progress;
+}
+
+.spinner {
+  margin: 0;
+}

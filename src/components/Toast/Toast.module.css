@@ -1,0 +1,111 @@
+@import '../../styles/tokens.css';
+
+.container {
+  position: fixed;
+  top: var(--tf-space-4);
+  right: var(--tf-space-4);
+  z-index: var(--tf-z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--tf-space-2);
+  width: min(360px, calc(100vw - var(--tf-space-6)));
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tf-space-3);
+  padding: var(--tf-space-3) var(--tf-space-4);
+  background-color: var(--tf-white);
+  border: var(--tf-border-width) solid var(--tf-border);
+  border-radius: var(--tf-radius-lg);
+  box-shadow: var(--tf-shadow-lg);
+  animation: tf-toast-in var(--tf-duration-normal) var(--tf-ease-out);
+  transition:
+    opacity var(--tf-duration-fast) var(--tf-ease-in-out),
+    transform var(--tf-duration-fast) var(--tf-ease-in-out);
+}
+
+.toast.leaving {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.icon {
+  display: inline-flex;
+  margin-top: 1px;
+}
+
+.success .icon {
+  color: var(--tf-success);
+}
+
+.error .icon {
+  color: var(--tf-error);
+}
+
+.warning .icon {
+  color: var(--tf-warning);
+}
+
+.info .icon {
+  color: var(--tf-info);
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--tf-text-body-small);
+  font-weight: var(--tf-weight-semibold);
+  line-height: var(--tf-leading-body-small);
+  color: var(--tf-text-primary);
+}
+
+.description {
+  margin: var(--tf-space-1) 0 0;
+  font-size: var(--tf-text-body-small);
+  line-height: var(--tf-leading-body-small);
+  color: var(--tf-text-secondary);
+}
+
+.closeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--tf-radius-sm);
+  background: transparent;
+  color: var(--tf-text-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--tf-duration-fast) var(--tf-ease-in-out),
+    color var(--tf-duration-fast) var(--tf-ease-in-out);
+}
+
+.closeButton:hover {
+  color: var(--tf-text-primary);
+  background-color: var(--tf-neutral-100);
+}
+
+.closeButton:focus-visible {
+  outline: none;
+  box-shadow: var(--tf-focus-ring);
+}
+
+@keyframes tf-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

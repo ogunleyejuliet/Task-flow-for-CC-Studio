@@ -1,0 +1,71 @@
+@import '../../styles/tokens.css';
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tf-space-1);
+  height: var(--tf-badge-height);
+  padding: 0 var(--tf-space-2);
+  border-radius: var(--tf-radius-full);
+  font-size: var(--tf-text-caption);
+  font-weight: var(--tf-weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+  border: var(--tf-border-width) solid transparent;
+}
+
+.badge.sm {
+  height: 20px;
+  padding: 0 var(--tf-space-2);
+  font-size: 11px;
+}
+
+.text {
+  display: inline-flex;
+  align-items: center;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+/* ---- Variants: subtle tinted surfaces (DESIGN §20) ----------------------- */
+
+.neutral {
+  background-color: var(--tf-neutral-100);
+  color: var(--tf-text-secondary);
+  border-color: var(--tf-border);
+}
+
+.brand {
+  background-color: var(--tf-powder);
+  color: var(--tf-blue-700);
+  border-color: var(--tf-blue-100);
+}
+
+.success {
+  background-color: var(--tf-success-tint);
+  color: var(--tf-success-strong);
+  border-color: var(--tf-success-border);
+}
+
+.warning {
+  background-color: var(--tf-warning-tint);
+  color: var(--tf-warning-strong);
+  border-color: var(--tf-warning-border);
+}
+
+.error {
+  background-color: var(--tf-error-tint);
+  color: var(--tf-error-strong);
+  border-color: var(--tf-error-border);
+}
+
+.info {
+  background-color: var(--tf-info-tint);
+  color: var(--tf-info-strong);
+  border-color: var(--tf-info-border);
+}

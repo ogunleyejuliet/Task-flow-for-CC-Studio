@@ -1,0 +1,31 @@
+@import '../../styles/tokens.css';
+
+/* Shared base (DESIGN §19). */
+.default,
+.powder,
+.elevated {
+  background-color: var(--tf-white);
+  border: var(--tf-border-width) solid var(--tf-border);
+  border-radius: var(--tf-radius-lg);
+  transition:
+    box-shadow var(--tf-duration-fast) var(--tf-ease-in-out),
+    border-color var(--tf-duration-fast) var(--tf-ease-in-out);
+}
+
+.padded {
+  padding: var(--tf-space-5);
+}
+
+.default:hover {
+  border-color: var(--tf-border-strong);
+}
+
+.powder {
+  background-color: var(--tf-powder);
+  border-color: transparent;
+}
+
+.elevated {
+  border-color: transparent;
+  box-shadow: var(--tf-shadow-md);
+}

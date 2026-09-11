@@ -1,0 +1,37 @@
+.container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-neutral-page-bg, #f8fafc);
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+.cardWrapper {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logoWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.75rem;
+  text-align: center;
+}
+
+.subTitle {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--color-neutral-secondary-text, #4b5563);
+  font-weight: 500;
+}
+
+.card {
+  width: 100%;
+}

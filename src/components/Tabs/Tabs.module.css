@@ -1,0 +1,63 @@
+@import '../../styles/tokens.css';
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.tabList {
+  display: flex;
+  gap: var(--tf-space-1);
+  border-bottom: var(--tf-border-width) solid var(--tf-border);
+  padding: 0;
+}
+
+.tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tf-space-2);
+  padding: var(--tf-space-2) var(--tf-space-3);
+  margin-bottom: -1px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--tf-text-secondary);
+  font-family: inherit;
+  font-size: var(--tf-text-body-small);
+  font-weight: var(--tf-weight-medium);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    color var(--tf-duration-fast) var(--tf-ease-in-out),
+    border-color var(--tf-duration-fast) var(--tf-ease-in-out);
+}
+
+.tab:hover:not(:disabled) {
+  color: var(--tf-text-primary);
+}
+
+.tab:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--tf-blue-700);
+  border-radius: var(--tf-radius-sm);
+}
+
+.tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.active {
+  color: var(--tf-blue-700);
+  border-bottom-color: var(--tf-blue-700);
+}
+
+.tabIcon {
+  display: inline-flex;
+}
+
+.panel {
+  padding: var(--tf-space-4) 0 var(--tf-space-5);
+}

@@ -1,0 +1,123 @@
+@import '../../styles/tokens.css';
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--tf-z-overlay);
+  background-color: rgb(17 24 39 / 0.5);
+  animation: tf-drawer-backdrop var(--tf-duration-normal) var(--tf-ease-out);
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  z-index: var(--tf-z-sidebar);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100vw;
+  background-color: var(--tf-white);
+  box-shadow: var(--tf-shadow-xl);
+  animation: tf-drawer-slide var(--tf-duration-slow) var(--tf-ease-out);
+}
+
+.right {
+  animation-name: tf-drawer-slide-in-right;
+}
+
+.left {
+  animation-name: tf-drawer-slide-in-left;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tf-space-4);
+  padding: var(--tf-space-4) var(--tf-space-5);
+  border-bottom: var(--tf-border-width) solid var(--tf-border);
+}
+
+.title {
+  font-size: var(--tf-text-section-heading);
+  line-height: var(--tf-leading-section-heading);
+  font-weight: var(--tf-weight-semibold);
+  margin: 0;
+}
+
+.closeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--tf-radius-md);
+  background: transparent;
+  color: var(--tf-text-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--tf-duration-fast) var(--tf-ease-in-out),
+    color var(--tf-duration-fast) var(--tf-ease-in-out);
+}
+
+.closeButton:hover {
+  background-color: var(--tf-neutral-100);
+  color: var(--tf-text-primary);
+}
+
+.closeButton:focus-visible {
+  outline: none;
+  box-shadow: var(--tf-focus-ring);
+}
+
+.floating {
+  position: absolute;
+  top: var(--tf-space-4);
+  right: var(--tf-space-4);
+  z-index: 1;
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--tf-space-5);
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--tf-space-2);
+  padding: var(--tf-space-4) var(--tf-space-5);
+  border-top: var(--tf-border-width) solid var(--tf-border);
+}
+
+@keyframes tf-drawer-backdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes tf-drawer-slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes tf-drawer-slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}

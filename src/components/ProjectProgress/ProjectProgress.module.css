@@ -1,0 +1,52 @@
+@import '../../styles/tokens.css';
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tf-space-2);
+  width: 100%;
+}
+
+.labelRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--tf-space-3);
+}
+
+.label {
+  font-size: var(--tf-text-body-small);
+  font-weight: var(--tf-weight-medium);
+  color: var(--tf-text-secondary);
+}
+
+.percent {
+  font-size: var(--tf-text-body-small);
+  font-weight: var(--tf-weight-semibold);
+  color: var(--tf-text-primary);
+}
+
+.track {
+  height: 8px;
+  border-radius: var(--tf-radius-full);
+  background-color: var(--tf-neutral-100);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  border-radius: var(--tf-radius-full);
+  transition: width var(--tf-duration-slow) var(--tf-ease-out);
+}
+
+.brand {
+  background-color: var(--tf-blue-200);
+}
+
+.success {
+  background-color: var(--tf-success);
+}
+
+.warning {
+  background-color: var(--tf-warning);
+}

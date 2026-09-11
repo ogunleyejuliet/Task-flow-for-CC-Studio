@@ -1,0 +1,120 @@
+@import '../../styles/tokens.css';
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tf-space-1);
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tf-space-1);
+  font-size: var(--tf-text-body-small);
+  font-weight: var(--tf-weight-medium);
+  color: var(--tf-text-primary);
+  line-height: 1;
+  margin-bottom: var(--tf-space-1);
+}
+
+.required {
+  color: var(--tf-error);
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  height: var(--tf-control-height);
+  padding: 0 var(--tf-space-3);
+  border: var(--tf-border-width) solid var(--tf-border-strong);
+  border-radius: var(--tf-radius-md);
+  background-color: var(--tf-white);
+  color: var(--tf-text-primary);
+  font-size: var(--tf-text-body-small);
+  line-height: var(--tf-leading-body-small);
+  outline: none;
+  transition:
+    border-color var(--tf-duration-fast) var(--tf-ease-in-out),
+    box-shadow var(--tf-duration-fast) var(--tf-ease-in-out);
+}
+
+.input::placeholder {
+  color: var(--tf-text-muted);
+}
+
+.input:focus-visible {
+  border-color: var(--tf-blue-700);
+  box-shadow: var(--tf-focus-ring);
+}
+
+.input:disabled {
+  background-color: var(--tf-neutral-50);
+  border-color: var(--tf-border);
+  color: var(--tf-text-muted);
+  cursor: not-allowed;
+}
+
+.hasPrefix {
+  padding-left: var(--tf-space-10);
+}
+
+.hasSuffix {
+  padding-right: var(--tf-space-10);
+}
+
+.prefixIcon,
+.suffixIcon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--tf-text-muted);
+  flex-shrink: 0;
+}
+
+.prefixIcon {
+  left: var(--tf-space-3);
+}
+
+.suffixIcon {
+  right: var(--tf-space-3);
+}
+
+.errorIcon {
+  color: var(--tf-error);
+}
+
+.inputError .input {
+  border-color: var(--tf-error);
+}
+
+.inputError .input:focus-visible {
+  box-shadow: 0 0 0 3px rgb(220 38 38 / 0.2);
+}
+
+.helper {
+  font-size: var(--tf-text-caption);
+  line-height: var(--tf-leading-caption);
+  color: var(--tf-text-muted);
+  margin: 0;
+}
+
+.errorMessage {
+  font-size: var(--tf-text-caption);
+  line-height: var(--tf-leading-caption);
+  color: var(--tf-error);
+  margin: 0;
+}
+
+.loading .input {
+  cursor: progress;
+}
+
+.disabled {
+  opacity: 0.85;
+}

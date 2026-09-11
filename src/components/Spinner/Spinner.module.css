@@ -1,0 +1,17 @@
+.spinner {
+  display: inline-block;
+  flex-shrink: 0;
+  animation: tf-spin var(--tf-duration-slow) linear infinite;
+}
+
+@keyframes tf-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 0.8s;
+  }
+}

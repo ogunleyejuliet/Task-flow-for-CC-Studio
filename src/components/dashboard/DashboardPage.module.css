@@ -1,0 +1,102 @@
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-neutral-page-bg, #f8fafc);
+}
+
+.body {
+  display: flex;
+  flex: 1;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 1.5rem 2rem;
+  max-width: 1400px;
+}
+
+.headerBanner {
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.welcomeText {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-neutral-primary-text, #111827);
+  margin: 0 0 0.25rem 0;
+}
+
+.subText {
+  font-size: 0.875rem;
+  color: var(--color-neutral-secondary-text, #4b5563);
+  margin: 0;
+}
+
+.userInfoCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.badgeManager {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: #dbeafe;
+  color: #1e40af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badgeStaff {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: #f3f4f6;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.toggleContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  background-color: #e2e8f0;
+  padding: 4px;
+  border-radius: 8px;
+  width: fit-content;
+}
+
+.toggleButton {
+  padding: 0.375rem 0.875rem;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  background: transparent;
+  color: var(--color-neutral-secondary-text, #4b5563);
+  transition: all 0.15s ease;
+}
+
+.toggleActive {
+  background-color: #ffffff;
+  color: var(--color-neutral-primary-text, #111827);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}

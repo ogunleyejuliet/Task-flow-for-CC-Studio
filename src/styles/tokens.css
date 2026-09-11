@@ -1,0 +1,159 @@
+/**
+ * TaskFlow Design Tokens
+ * -------------------------------------------------------------------------
+ * Source of truth: DESIGN.md (TaskFlow — Design System)
+ *
+ * Every color, font size, spacing unit, radius, shadow and breakpoint used
+ * across the component library should be derived from these variables.
+ * Avoid hardcoding raw values inside components.
+ */
+:root {
+  /* ---- Brand palette ---------------------------------------------------- */
+  --tf-blue-100: #9ec8f8; /* Primary TaskFlow blue — logo, brand accents, active states */
+  --tf-blue-200: #6da8f0; /* Secondary blue — highlights, progress, hovers */
+  --tf-blue-700: #2f6db5; /* Strong functional blue — primary CTAs, links, focus */
+  --tf-powder: #cfe8ff; /* Soft supporting tint — cards, tinted surfaces */
+
+  /* ---- Neutral palette -------------------------------------------------- */
+  --tf-white: #ffffff;
+  --tf-page-bg: #f8fafc; /* Default application background */
+  --tf-neutral-50: #f9fafb;
+  --tf-neutral-100: #f3f4f6;
+  --tf-border: #e5e7eb; /* Borders and dividers */
+  --tf-border-strong: #d1d5db; /* Input outlines, secondary button borders */
+  --tf-text-primary: #111827; /* Headings, task names, navigation */
+  --tf-text-secondary: #4b5563; /* Supporting content */
+  --tf-text-muted: #6b7280; /* Metadata, captions, placeholders */
+
+  /* ---- Semantic palette (independent of brand) -------------------------- */
+  --tf-success: #16a34a;
+  --tf-success-strong: #15803d;
+  --tf-success-tint: #f0fdf4;
+  --tf-success-border: #bbf7d0;
+  --tf-warning: #d97706;
+  --tf-warning-strong: #b45309;
+  --tf-warning-tint: #fffbeb;
+  --tf-warning-border: #fde68a;
+  --tf-error: #dc2626;
+  --tf-error-strong: #b91c1c;
+  --tf-error-tint: #fef2f2;
+  --tf-error-border: #fecaca;
+  --tf-info: #2563eb;
+  --tf-info-strong: #1d4ed8;
+  --tf-info-tint: #eff6ff;
+  --tf-info-border: #bfdbfe;
+
+  /* ---- Focus ------------------------------------------------------------ */
+  --tf-focus-ring-color: var(--tf-blue-700);
+  --tf-focus-ring-width: 2px;
+  --tf-focus-ring: 0 0 0 3px rgb(47 109 181 / 0.3);
+
+  /* ---- Typography -------------------------------------------------------- */
+  --tf-font-family:
+    'Poppins', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+
+  --tf-text-display: 32px;
+  --tf-text-page-heading: 24px;
+  --tf-text-section-heading: 18px;
+  --tf-text-body: 16px;
+  --tf-text-body-small: 14px;
+  --tf-text-caption: 12px;
+  --tf-text-button: 14px;
+
+  --tf-leading-display: 40px;
+  --tf-leading-page-heading: 32px;
+  --tf-leading-section-heading: 26px;
+  --tf-leading-body: 24px;
+  --tf-leading-body-small: 22px;
+  --tf-leading-caption: 18px;
+  --tf-leading-button: 20px;
+
+  --tf-weight-normal: 400;
+  --tf-weight-medium: 500;
+  --tf-weight-semibold: 600;
+  --tf-weight-bold: 700;
+
+  --tf-tracking-normal: 0;
+  --tf-tracking-tight: -0.01em;
+
+  /* ---- Spacing (4px base scale) ------------------------------------------ */
+  --tf-space-1: 4px;
+  --tf-space-2: 8px;
+  --tf-space-3: 12px;
+  --tf-space-4: 16px;
+  --tf-space-5: 24px;
+  --tf-space-6: 32px;
+  --tf-space-7: 48px;
+  --tf-space-8: 64px;
+  --tf-space-10: 40px; /* Used inside icon-led controls */
+
+  /* ---- Border radius ------------------------------------------------------ */
+  --tf-radius-sm: 6px; /* Small controls */
+  --tf-radius-md: 8px; /* Inputs and buttons */
+  --tf-radius-lg: 12px; /* Cards */
+  --tf-radius-xl: 16px; /* Large containers */
+  --tf-radius-full: 999px; /* Pills, badges, avatars */
+
+  /* ---- Sizing -------------------------------------------------------------- */
+  --tf-control-height-sm: 32px;
+  --tf-control-height: 40px;
+  --tf-control-height-lg: 44px;
+  --tf-avatar-2xs: 20px;
+  --tf-avatar-xs: 24px;
+  --tf-avatar-sm: 32px;
+  --tf-avatar-md: 40px;
+  --tf-avatar-lg: 48px;
+  --tf-badge-height: 24px;
+  --tf-sidebar-width: 256px;
+  --tf-sidebar-width-collapsed: 72px;
+  --tf-topbar-height: 64px;
+
+  /* ---- Borders --------------------------------------------------------------- */
+  --tf-border-width: 1px;
+  --tf-border-width-strong: 2px;
+
+  /* ---- Shadows (subtle elevation only) --------------------------------------- */
+  --tf-shadow-sm: 0 1px 2px rgb(16 24 40 / 0.06);
+  --tf-shadow-md:
+    0 2px 4px -1px rgb(16 24 40 / 0.08), 0 4px 6px -2px rgb(16 24 40 / 0.05);
+  --tf-shadow-lg:
+    0 8px 12px -3px rgb(16 24 40 / 0.1), 0 4px 6px -4px rgb(16 24 40 / 0.06);
+  --tf-shadow-xl:
+    0 20px 25px -8px rgb(16 24 40 / 0.16), 0 8px 10px -6px rgb(16 24 40 / 0.08);
+
+  /* ---- Breakpoints ------------------------------------------------------------ */
+  --tf-bp-sm: 640px;
+  --tf-bp-md: 768px;
+  --tf-bp-lg: 1024px;
+  --tf-bp-xl: 1280px;
+
+  /* ---- Motion --------------------------------------------------------------- */
+  --tf-duration-instant: 100ms;
+  --tf-duration-fast: 150ms;
+  --tf-duration-normal: 200ms;
+  --tf-duration-slow: 300ms;
+  --tf-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --tf-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --tf-motion-reduce: 0ms;
+
+  /* ---- Z-index ----------------------------------------------------------------- */
+  --tf-z-sticky: 100;
+  --tf-z-dropdown: 200;
+  --tf-z-topbar: 300;
+  --tf-z-sidebar: 400;
+  --tf-z-overlay: 500;
+  --tf-z-modal: 600;
+  --tf-z-popover: 700;
+  --tf-z-toast: 800;
+  --tf-z-tooltip: 900;
+}
+
+/* Respect reduced-motion preferences at the design-token level. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --tf-duration-fast: var(--tf-motion-reduce);
+    --tf-duration-normal: var(--tf-motion-reduce);
+    --tf-duration-slow: var(--tf-motion-reduce);
+  }
+}

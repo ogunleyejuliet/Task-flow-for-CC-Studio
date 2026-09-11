@@ -1,0 +1,36 @@
+@import '../../styles/tokens.css';
+
+.skeleton {
+  display: inline-block;
+  background-color: var(--tf-neutral-100);
+  border-radius: var(--tf-radius-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgb(255 255 255 / 0.6) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: tf-skeleton-shimmer 1.4s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after {
+    animation: none;
+    background: transparent;
+  }
+}
+
+@keyframes tf-skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}

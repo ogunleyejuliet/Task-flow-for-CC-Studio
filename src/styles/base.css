@@ -1,0 +1,72 @@
+/* TaskFlow global base styles. Token-driven; components import tokens.css. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--tf-font-family);
+  font-size: var(--tf-text-body);
+  line-height: var(--tf-leading-body);
+  color: var(--tf-text-primary);
+  background-color: var(--tf-page-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-weight: var(--tf-weight-bold);
+  color: var(--tf-text-primary);
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--tf-blue-700);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Visible focus indicator for keyboard users without harming mouse/touch UX.
+   Components also define their own focus rings where needed. */
+:focus-visible {
+  outline: var(--tf-focus-ring-width) solid var(--tf-focus-ring-color);
+  outline-offset: 2px;
+}
+
+::selection {
+  background-color: var(--tf-powder);
+  color: var(--tf-blue-700);
+}

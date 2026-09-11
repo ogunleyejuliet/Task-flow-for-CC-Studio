@@ -1,0 +1,18 @@
+.logo {
+  display: block;
+  height: auto;
+}
+
+.symbol {
+  display: inline-flex;
+  overflow: hidden;
+  justify-content: flex-start;
+  flex-shrink: 0;
+}
+
+.image {
+  height: 100%;
+  width: auto;
+  max-width: none;
+  flex-shrink: 0;
+}

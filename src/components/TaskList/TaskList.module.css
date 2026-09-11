@@ -1,0 +1,30 @@
+@import '../../styles/tokens.css';
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tf-space-3);
+}
+
+.skeletonRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tf-space-2);
+  padding: var(--tf-space-4);
+  margin-bottom: var(--tf-space-3);
+  background-color: var(--tf-white);
+  border: var(--tf-border-width) solid var(--tf-border);
+  border-radius: var(--tf-radius-lg);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
