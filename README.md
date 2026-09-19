@@ -1,32 +1,45 @@
-# React + TypeScript + Vite
+# TaskFlow
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+TaskFlow is an internal task management app for a small creative agency. It was designed to replace scattered task tracking across WhatsApp, spreadsheets, and notebooks.
 
-Currently, two official plugins are available:
+## The Problem
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+The team manages multiple client projects at the same time, making it easy for tasks to get lost, deadlines to be missed, or responsibilities to become unclear.
 
-## React Compiler
+The goal was to create one simple place where the team could see what needs to be done, who is responsible, and what is overdue.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Who It's For
 
-## Expanding the Oxlint configuration
+TaskFlow is built for small creative teams with project managers, designers, developers, and content teams working across multiple client projects.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## Product Decisions
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+**1. Build for one team, not everyone**
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+I chose to make TaskFlow an internal, invite-only product instead of a multi-company platform. This kept the first version focused on solving one team's workflow rather than building features for every possible type of user.
+
+**2. Keep tasks simple**
+
+A task only needs the information necessary to manage it: title, assignee, due date, priority, status, and client. I deliberately avoided comments, file uploads, subtasks, and other features that could add complexity without solving the core problem.
+
+**3. Make the dashboard action-oriented**
+
+Instead of showing lots of project data, the dashboard focuses on **Today, In Progress, Completed, and Overdue**. The decision was based on what a project manager needs to know when starting the workday.
+
+**4. Use a simple workflow**
+
+Tasks move through **To Do → In Progress → Complete**. A small team does not need a complicated workflow to understand the state of its work.
+
+**5. Separate manager and staff permissions**
+
+Managers can manage users and tasks, while staff primarily manage their assigned work. This prevents unnecessary access while keeping the interface simple for each role.
+
+**6. Keep clients out of the first version**
+
+Clients do not have accounts or access to the system. TaskFlow is focused on the agency's internal workflow first, rather than trying to solve client communication at the same time.
+
+## Outcome
+
+TaskFlow turns a scattered task management process into one structured workspace.
+
+The project was also an exercise in product thinking: starting with a specific business problem, making deliberate scope decisions, and building only what was necessary to solve the problem.
