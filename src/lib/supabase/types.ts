@@ -20,6 +20,7 @@ export interface ProfileRow {
 export interface ClientRow {
   id: string
   name: string
+  color?: string | null
   created_at: string | null
   updated_at: string | null
 }
