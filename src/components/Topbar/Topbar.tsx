@@ -28,6 +28,18 @@ export function Topbar({
   user = null,
   className,
 }: TopbarProps) {
+  const searchNode =
+    search === undefined ? (
+      <Input
+        aria-label="Search"
+        leadingIcon="search"
+        placeholder="Search tasks..."
+        className={styles.search}
+      />
+    ) : (
+      search
+    )
+
   return (
     <header className={cx(styles.topbar, className)}>
       <div className={styles.left}>
@@ -43,42 +55,21 @@ export function Topbar({
         )}
         {brand && <div className={styles.brand}>{brand}</div>}
       </div>
-      <div className={styles.center}>
-        {search === undefined ? (
-          <Input
-            aria-label="Search"
-            leadingIcon="search"
-            placeholder="Search tasks..."
-            className={styles.search}
-          />
-        ) : (
-          search
-        )}
-      </div>
+
+      <div className={styles.center}>{actions}</div>
+
       <div className={styles.right}>
-        {actions ?? (
-          <>
-            <Tooltip content="Notifications" position="bottom" delay={0}>
-              <button
-                type="button"
-                className={styles.iconButton}
-                aria-label="Notifications"
-              >
-                <Icon name="bell" size={20} />
-              </button>
-            </Tooltip>
-            {user && (
-              <Tooltip content={user.name} position="bottom" delay={0}>
-                <button
-                  type="button"
-                  className={styles.profileButton}
-                  aria-label={`Account: ${user.name}`}
-                >
-                  <Avatar name={user.name} src={user.avatarUrl} size="sm" />
-                </button>
-              </Tooltip>
-            )}
-          </>
+        {searchNode}
+        {user && (
+          <Tooltip content={user.name} position="bottom" delay={0}>
+            <button
+              type="button"
+              className={styles.profileButton}
+              aria-label={`Account: ${user.name}`}
+            >
+              <Avatar name={user.name} src={user.avatarUrl} size="sm" />
+            </button>
+          </Tooltip>
         )}
       </div>
     </header>

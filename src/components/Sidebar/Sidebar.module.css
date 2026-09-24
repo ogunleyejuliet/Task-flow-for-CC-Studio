@@ -4,9 +4,7 @@
 
 .desktop {
   display: none;
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  height: 100%;
   flex-shrink: 0;
 }
 
@@ -130,14 +128,22 @@
   color: var(--tf-white);
 }
 
-/* ---- User card ------------------------------------------------------------ */
+/* ---- Footer & User card --------------------------------------------------- */
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tf-space-3);
+  padding: var(--tf-space-3) var(--tf-space-4);
+  border-top: var(--tf-border-width) solid var(--tf-border);
+  background-color: var(--tf-white);
+  margin-top: auto;
+}
 
 .userCard {
   display: flex;
   align-items: center;
   gap: var(--tf-space-2);
-  padding: var(--tf-space-3) var(--tf-space-4);
-  border-top: var(--tf-border-width) solid var(--tf-border);
   min-width: 0;
 }
 
@@ -167,31 +173,8 @@
   text-overflow: ellipsis;
 }
 
-.moreButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border: 0;
-  border-radius: var(--tf-radius-sm);
-  background: transparent;
-  color: var(--tf-text-muted);
-  cursor: pointer;
-  transition:
-    background-color var(--tf-duration-fast) var(--tf-ease-in-out),
-    color var(--tf-duration-fast) var(--tf-ease-in-out);
-}
-
-.moreButton:hover {
-  background-color: var(--tf-neutral-100);
-  color: var(--tf-text-primary);
-}
-
-.moreButton:focus-visible {
-  outline: none;
-  box-shadow: var(--tf-focus-ring);
+.signOutWrapper {
+  width: 100%;
 }
 
 /* ---- Mobile / tablet overlay ---------------------------------------------- */

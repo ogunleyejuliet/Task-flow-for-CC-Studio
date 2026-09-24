@@ -1,18 +1,23 @@
 .layout {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   background-color: var(--color-neutral-page-bg, #f8fafc);
 }
 
 .body {
   display: flex;
   flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .mainContent {
   flex: 1;
-  padding: 1.5rem 2rem;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 2.5rem 2rem 2rem;
   max-width: 1400px;
 }
 

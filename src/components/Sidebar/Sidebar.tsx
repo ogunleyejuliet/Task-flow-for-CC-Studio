@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { cx } from '../../utils/cx'
 import { Icon, type IconName } from '../Icon'
 import { Avatar } from '../Avatar'
+import { Button } from '../Button'
 import styles from './Sidebar.module.css'
 
 export interface SidebarItem {
@@ -32,6 +33,8 @@ export interface SidebarProps {
   /** Brand lockup shown at the top. */
   logo?: ReactNode
   user?: SidebarUser
+  /** Callback triggered when Sign Out button in sidebar is clicked. */
+  onSignOut?: () => void
   /** Controlled `true` while the mobile overlay is open. */
   open?: boolean
   /** Callback when the overlay should close. */
@@ -46,6 +49,7 @@ interface ContentProps {
   onNavigate?: (id: string) => void
   logo?: ReactNode
   user?: SidebarUser
+  onSignOut?: () => void
   sidebarLabel?: string
 }
 
@@ -55,6 +59,7 @@ function SidebarContent({
   onNavigate,
   logo,
   user,
+  onSignOut,
   sidebarLabel,
 }: ContentProps) {
   return (
@@ -99,20 +104,30 @@ function SidebarContent({
         )}
       </div>
 
-      {user && (
-        <div className={styles.userCard}>
-          <Avatar name={user.name} src={user.avatarUrl} size="sm" />
-          <div className={styles.userText}>
-            <span className={styles.userName}>{user.name}</span>
-            {user.role && <span className={styles.userRole}>{user.role}</span>}
-          </div>
-          <button
-            type="button"
-            className={styles.moreButton}
-            aria-label={`Account options for ${user.name}`}
-          >
-            <Icon name="more-horizontal" size={18} aria-hidden="true" />
-          </button>
+      {(user || onSignOut) && (
+        <div className={styles.footer}>
+          {user && (
+            <div className={styles.userCard}>
+              <Avatar name={user.name} src={user.avatarUrl} size="sm" />
+              <div className={styles.userText}>
+                <span className={styles.userName}>{user.name}</span>
+                {user.role && <span className={styles.userRole}>{user.role}</span>}
+              </div>
+            </div>
+          )}
+          {onSignOut && (
+            <div className={styles.signOutWrapper}>
+              <Button
+                variant="secondary"
+                size="sm"
+                leadingIcon="logout"
+                onClick={onSignOut}
+                fullWidth
+              >
+                Sign Out
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </nav>
@@ -131,6 +146,7 @@ export function Sidebar({
   onNavigate,
   logo,
   user,
+  onSignOut,
   open = false,
   onClose,
   sidebarLabel,
@@ -145,6 +161,7 @@ export function Sidebar({
           onNavigate={onNavigate}
           logo={logo}
           user={user}
+          onSignOut={onSignOut}
           sidebarLabel={sidebarLabel}
         />
       </aside>
@@ -166,6 +183,10 @@ export function Sidebar({
             }}
             logo={logo}
             user={user}
+            onSignOut={() => {
+              onSignOut?.()
+              onClose?.()
+            }}
             sidebarLabel={sidebarLabel}
           />
         </aside>

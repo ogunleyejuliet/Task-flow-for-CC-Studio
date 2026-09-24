@@ -63,16 +63,11 @@ export function DashboardPage({ onOpenShowcase }: DashboardPageProps) {
         onMenuClick={() => setMobileMenuOpen(true)}
         user={{ name: displayName }}
         actions={
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            {onOpenShowcase && (
-              <Button variant="tertiary" size="sm" onClick={onOpenShowcase}>
-                Design Showcase
-              </Button>
-            )}
-            <Button variant="secondary" size="sm" leadingIcon="logout" onClick={signOut}>
-              Sign Out
+          onOpenShowcase ? (
+            <Button variant="tertiary" size="sm" onClick={onOpenShowcase}>
+              Design Showcase
             </Button>
-          </div>
+          ) : undefined
         }
       />
 
@@ -85,6 +80,7 @@ export function DashboardPage({ onOpenShowcase }: DashboardPageProps) {
             name: displayName,
             role: userRole,
           }}
+          onSignOut={signOut}
           open={mobileMenuOpen}
           onClose={() => setMobileMenuOpen(false)}
         />
