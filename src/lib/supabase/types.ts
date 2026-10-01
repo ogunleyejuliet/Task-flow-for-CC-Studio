@@ -38,6 +38,14 @@ export interface TaskRow {
   created_at: string | null
   updated_at: string | null
   completed_at: string | null
+  is_deleted: boolean
+}
+
+/** TaskRow with joined assignee profile and client data, returned by fetchTasks queries. */
+export interface TaskWithRelations extends TaskRow {
+  assignee: Pick<ProfileRow, 'id' | 'full_name' | 'role'> | null
+  creator: Pick<ProfileRow, 'id' | 'full_name'> | null
+  client: Pick<ClientRow, 'id' | 'name'> | null
 }
 
 export interface Database {
@@ -55,8 +63,8 @@ export interface Database {
       }
       tasks: {
         Row: TaskRow
-        Insert: Partial<TaskRow>
-        Update: Partial<TaskRow>
+        Insert: Omit<Partial<TaskRow>, 'id' | 'created_at' | 'updated_at'>
+        Update: Omit<Partial<TaskRow>, 'id' | 'created_at'>
       }
     }
     Views: Record<string, never>

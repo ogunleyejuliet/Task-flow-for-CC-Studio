@@ -1,0 +1,20 @@
+.body {
+  padding: var(--tf-space-2) 0;
+}
+
+.message {
+  font-size: var(--tf-text-body-small);
+  color: var(--tf-text-secondary);
+  line-height: var(--tf-leading-body-small);
+  margin: 0;
+}
+
+.taskName {
+  color: var(--tf-text-primary);
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--tf-space-3);
+}

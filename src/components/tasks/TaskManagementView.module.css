@@ -1,0 +1,265 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tf-space-5);
+}
+
+/* ─── Header ─────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tf-space-3);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: baseline;
+  gap: var(--tf-space-3);
+}
+
+.heading {
+  margin: 0;
+  font-size: var(--tf-text-heading-sm);
+  font-weight: var(--tf-weight-semibold);
+  color: var(--tf-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.count {
+  font-size: var(--tf-text-body-small);
+  color: var(--tf-text-muted);
+  font-weight: var(--tf-weight-medium);
+}
+
+/* ─── Filters ─────────────────────────────────────────── */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--tf-space-3);
+}
+
+.filterSelect {
+  min-width: 150px;
+  max-width: 190px;
+}
+
+.clearFilters {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tf-space-1);
+  padding: var(--tf-space-2) var(--tf-space-3);
+  background: transparent;
+  border: var(--tf-border-width) solid var(--tf-border-default);
+  border-radius: var(--tf-radius-md);
+  font-size: var(--tf-text-body-small);
+  color: var(--tf-text-secondary);
+  cursor: pointer;
+  transition: background var(--tf-duration-fast), color var(--tf-duration-fast);
+}
+
+.clearFilters:hover {
+  background: var(--tf-neutral-100);
+  color: var(--tf-text-primary);
+}
+
+/* ─── Table ───────────────────────────────────────────── */
+.tableWrapper {
+  overflow-x: auto;
+  border: var(--tf-border-width) solid var(--tf-border-default);
+  border-radius: var(--tf-radius-lg);
+  background: var(--tf-white);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--tf-text-body-small);
+  min-width: 700px;
+}
+
+.th {
+  padding: var(--tf-space-3) var(--tf-space-5);
+  text-align: left;
+  font-size: 11px;
+  font-weight: var(--tf-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--tf-text-muted);
+  background: var(--tf-neutral-50);
+  border-bottom: var(--tf-border-width) solid var(--tf-border-default);
+  white-space: nowrap;
+}
+
+.thActions {
+  composes: th;
+  width: 80px;
+  text-align: right;
+}
+
+.row {
+  border-bottom: var(--tf-border-width) solid var(--tf-border-subtle);
+  transition: background var(--tf-duration-fast);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row:hover {
+  background: var(--tf-neutral-50);
+}
+
+.td {
+  padding: var(--tf-space-4) var(--tf-space-5);
+  vertical-align: middle;
+  color: var(--tf-text-primary);
+}
+
+.tdActions {
+  padding: var(--tf-space-3) var(--tf-space-4);
+  vertical-align: middle;
+}
+
+/* ─── Title cell ──────────────────────────────────────── */
+.titleCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 280px;
+}
+
+.taskTitle {
+  font-weight: var(--tf-weight-medium);
+  color: var(--tf-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.taskDesc {
+  font-size: 12px;
+  color: var(--tf-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── Assignee cell ───────────────────────────────────── */
+.assigneeCell {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tf-space-2);
+}
+
+.assigneeName {
+  font-size: var(--tf-text-body-small);
+  color: var(--tf-text-primary);
+}
+
+.unassigned {
+  color: var(--tf-text-muted);
+  font-size: var(--tf-text-body-small);
+}
+
+.clientName {
+  font-size: var(--tf-text-body-small);
+  color: var(--tf-text-primary);
+  font-weight: var(--tf-weight-medium);
+}
+
+/* ─── Due date ────────────────────────────────────────── */
+.dueDate {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tf-space-1);
+  font-size: var(--tf-text-body-small);
+  color: var(--tf-text-secondary);
+  white-space: nowrap;
+}
+
+.overdue {
+  composes: dueDate;
+  color: var(--tf-red-600, #dc2626);
+  font-weight: var(--tf-weight-medium);
+}
+
+/* ─── Status cell ─────────────────────────────────────── */
+.statusCell {
+  display: flex;
+  align-items: center;
+  gap: var(--tf-space-2);
+}
+
+.statusSelect {
+  /* visually hidden — overlay on the badge */
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* ─── Actions ─────────────────────────────────────────── */
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--tf-space-1);
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--tf-radius-sm);
+  border: none;
+  background: transparent;
+  color: var(--tf-text-muted);
+  cursor: pointer;
+  transition: background var(--tf-duration-fast), color var(--tf-duration-fast);
+}
+
+.actionBtn:hover {
+  background: var(--tf-neutral-100);
+  color: var(--tf-text-primary);
+}
+
+.actionBtnDanger:hover {
+  background: var(--tf-red-50, #fef2f2);
+  color: var(--tf-red-600, #dc2626);
+}
+
+/* ─── Loading / Error center ──────────────────────────── */
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tf-space-3);
+  min-height: 280px;
+}
+
+.loadingText {
+  font-size: var(--tf-text-body-small);
+  color: var(--tf-text-muted);
+}
+
+/* ─── Responsive ──────────────────────────────────────── */
+@media (max-width: 640px) {
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .filterSelect {
+    max-width: none;
+    min-width: 0;
+  }
+  .th,
+  .td {
+    padding: var(--tf-space-3) var(--tf-space-3);
+  }
+}
