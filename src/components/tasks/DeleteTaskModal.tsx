@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { useToast } from '../../Toast/useToast'
-import { deleteTask } from '../../../lib/supabase/tasks'
-import type { TaskWithRelations } from '../../../lib/supabase/types'
-import { Modal } from '../../Modal/Modal'
-import { Button } from '../../Button/Button'
+import { useToast } from '../Toast/useToast'
+import { deleteTask } from '../../lib/supabase/tasks'
+import type { TaskWithRelations } from '../../lib/supabase/types'
+import { Modal } from '../Modal/Modal'
+import { Button } from '../Button/Button'
 import styles from './DeleteTaskModal.module.css'
 
 export interface DeleteTaskModalProps {

@@ -2,17 +2,21 @@ import { Badge, type BadgeVariant } from '../Badge'
 import type { TaskStatus } from '../../types/task'
 
 const config: Record<
-  TaskStatus,
+  string,
   { label: string; variant: BadgeVariant; icon?: never }
 > = {
   'to-do': { label: 'To Do', variant: 'neutral' },
+  'todo': { label: 'To Do', variant: 'neutral' },
+  'to_do': { label: 'To Do', variant: 'neutral' },
   'in-progress': { label: 'In Progress', variant: 'brand' },
-  completed: { label: 'Completed', variant: 'success' },
-  blocked: { label: 'Blocked', variant: 'error' },
+  'in_progress': { label: 'In Progress', variant: 'brand' },
+  'completed': { label: 'Completed', variant: 'success' },
+  'complete': { label: 'Completed', variant: 'success' },
+  'blocked': { label: 'Blocked', variant: 'error' },
 }
 
 export interface StatusBadgeProps {
-  status: TaskStatus
+  status: TaskStatus | string
   className?: string
 }
 
@@ -21,10 +25,10 @@ export interface StatusBadgeProps {
  * never communicated by color alone (DESIGN §17, §32).
  */
 export function StatusBadge({ status, className }: StatusBadgeProps) {
-  const { label, variant } = config[status]
+  const item = config[status] ?? { label: status, variant: 'neutral' as BadgeVariant }
   return (
-    <Badge variant={variant} dot className={className}>
-      {label}
+    <Badge variant={item.variant} dot className={className}>
+      {item.label}
     </Badge>
   )
 }

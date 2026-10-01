@@ -5,9 +5,11 @@ import { Sidebar, type SidebarSection } from '../Sidebar/Sidebar'
 import { Card } from '../Card/Card'
 import { Button } from '../Button/Button'
 import { Avatar } from '../Avatar/Avatar'
+import { Input } from '../Input/Input'
 import { TaskflowLogo } from '../TaskflowLogo/TaskflowLogo'
 import { StaffManagementView } from '../staff/StaffManagementView'
 import { ClientManagementView } from '../clients/ClientManagementView'
+import { TaskManagementView } from '../tasks/TaskManagementView'
 import styles from './DashboardPage.module.css'
 
 export interface DashboardPageProps {
@@ -19,6 +21,7 @@ export function DashboardPage({ onOpenShowcase }: DashboardPageProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeNav, setActiveNav] = useState('dashboard')
   const [viewScope, setViewScope] = useState<'all' | 'my'>(isManager ? 'all' : 'my')
+  const [searchQuery, setSearchQuery] = useState('')
 
   const displayName = profile?.full_name || user?.email?.split('@')[0] || 'Team Member'
   const userRole = profile?.role || (isManager ? 'Project Manager' : 'Team Member')
@@ -56,12 +59,23 @@ export function DashboardPage({ onOpenShowcase }: DashboardPageProps) {
     setActiveNav(id)
   }
 
+  const currentScope = activeNav === 'my-tasks' ? 'my' : viewScope
+
   return (
     <div className={styles.layout}>
       <Topbar
         brand={<TaskflowLogo width={140} />}
         onMenuClick={() => setMobileMenuOpen(true)}
         user={{ name: displayName }}
+        search={
+          <Input
+            aria-label="Search tasks"
+            leadingIcon="search"
+            placeholder="Search tasks..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        }
         actions={
           onOpenShowcase ? (
             <Button variant="tertiary" size="sm" onClick={onOpenShowcase}>
@@ -126,12 +140,13 @@ export function DashboardPage({ onOpenShowcase }: DashboardPageProps) {
                     </span>
                   </div>
                   <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.875rem', color: '#4b5563' }}>
-                    {user?.email} {profile?.department ? `• ${profile.department}` : ''} {profile?.role ? `(${profile.role})` : ''}
+                    {user?.email} {profile?.department ? `• ${profile.department}` : ''}{' '}
+                    {profile?.role ? `(${profile.role})` : ''}
                   </p>
                 </div>
               </Card>
 
-              {isManager && (
+              {isManager && activeNav === 'dashboard' && (
                 <div className={styles.toggleContainer}>
                   <button
                     type="button"
@@ -150,17 +165,11 @@ export function DashboardPage({ onOpenShowcase }: DashboardPageProps) {
                 </div>
               )}
 
-              <div style={{ padding: '2rem 0', textAlign: 'center', color: '#6b7280' }}>
-                <p style={{ fontSize: '1rem', fontWeight: 500 }}>
-                  Phase 3 Staff & Client Administration Active.
-                </p>
-                <p style={{ fontSize: '0.875rem' }}>
-                  User access level identified as <strong>{accessLevel.toUpperCase()}</strong>.
-                  {isManager
-                    ? ' You have manager administrative controls enabled for Staff & Client Management.'
-                    : ' Administrative controls are restricted to Manager role.'}
-                </p>
-              </div>
+              <TaskManagementView
+                scope={currentScope}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+              />
             </>
           )}
         </main>
@@ -168,4 +177,3 @@ export function DashboardPage({ onOpenShowcase }: DashboardPageProps) {
     </div>
   )
 }
-

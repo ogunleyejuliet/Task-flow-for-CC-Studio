@@ -36,14 +36,24 @@ const TASK_SELECT = `
   created_at,
   updated_at,
   completed_at,
-  is_deleted,
   assignee:assignee_id ( id, full_name, role ),
   creator:creator_id ( id, full_name ),
   client:client_id ( id, name )
 `
 
 /**
- * Fetch all active (non-deleted) tasks visible to the current user.
+ * Helper to convert UI status strings to DB check-constraint values
+ */
+export function normalizeStatusToDb(status: string): string {
+  const s = status.toLowerCase().trim()
+  if (s === 'to-do' || s === 'to_do') return 'todo'
+  if (s === 'in-progress') return 'in_progress'
+  if (s === 'complete') return 'completed'
+  return s
+}
+
+/**
+ * Fetch all active tasks visible to the current user.
  * RLS enforces manager-sees-all vs. staff-sees-own.
  */
 export async function fetchTasks(): Promise<{
@@ -54,11 +64,10 @@ export async function fetchTasks(): Promise<{
     const { data, error } = await supabase
       .from('tasks')
       .select(TASK_SELECT)
-      .eq('is_deleted', false)
       .order('created_at', { ascending: false })
 
     if (error) return { data: null, error: new Error(error.message) }
-    return { data: data as TaskWithRelations[], error: null }
+    return { data: data as unknown as TaskWithRelations[], error: null }
   } catch (err) {
     return { data: null, error: err instanceof Error ? err : new Error(String(err)) }
   }
@@ -76,12 +85,11 @@ export async function fetchTasksForUser(userId: string): Promise<{
     const { data, error } = await supabase
       .from('tasks')
       .select(TASK_SELECT)
-      .eq('is_deleted', false)
       .eq('assignee_id', userId)
       .order('due_date', { ascending: true, nullsFirst: false })
 
     if (error) return { data: null, error: new Error(error.message) }
-    return { data: data as TaskWithRelations[], error: null }
+    return { data: data as unknown as TaskWithRelations[], error: null }
   } catch (err) {
     return { data: null, error: err instanceof Error ? err : new Error(String(err)) }
   }
@@ -100,18 +108,19 @@ export async function createTask(params: CreateTaskParams): Promise<{
 
   try {
     const now = new Date().toISOString()
+    const dbStatus = normalizeStatusToDb(params.status)
+
     const { data, error } = await supabase
       .from('tasks')
       .insert({
         title: params.title.trim(),
         description: params.description?.trim() || null,
-        status: params.status,
-        priority: params.priority,
+        status: dbStatus,
+        priority: params.priority.toLowerCase(),
         due_date: params.due_date || null,
         client_id: params.client_id || null,
         assignee_id: params.assignee_id || null,
         creator_id: params.creator_id,
-        is_deleted: false,
         created_at: now,
         updated_at: now,
       })
@@ -119,7 +128,7 @@ export async function createTask(params: CreateTaskParams): Promise<{
       .single()
 
     if (error) return { data: null, error: new Error(error.message) }
-    return { data: data as TaskWithRelations, error: null }
+    return { data: data as unknown as TaskWithRelations, error: null }
   } catch (err) {
     return { data: null, error: err instanceof Error ? err : new Error(String(err)) }
   }
@@ -143,12 +152,13 @@ export async function updateTask(params: UpdateTaskParams): Promise<{
     if (params.title !== undefined) payload.title = params.title.trim()
     if (params.description !== undefined) payload.description = params.description?.trim() || null
     if (params.status !== undefined) {
-      payload.status = params.status
-      if (params.status === 'completed') {
+      const dbStatus = normalizeStatusToDb(params.status)
+      payload.status = dbStatus
+      if (dbStatus === 'completed' || dbStatus === 'complete') {
         payload.completed_at = new Date().toISOString()
       }
     }
-    if (params.priority !== undefined) payload.priority = params.priority
+    if (params.priority !== undefined) payload.priority = params.priority.toLowerCase()
     if ('due_date' in params) payload.due_date = params.due_date || null
     if ('client_id' in params) payload.client_id = params.client_id || null
     if ('assignee_id' in params) payload.assignee_id = params.assignee_id || null
@@ -161,24 +171,21 @@ export async function updateTask(params: UpdateTaskParams): Promise<{
       .single()
 
     if (error) return { data: null, error: new Error(error.message) }
-    return { data: data as TaskWithRelations, error: null }
+    return { data: data as unknown as TaskWithRelations, error: null }
   } catch (err) {
     return { data: null, error: err instanceof Error ? err : new Error(String(err)) }
   }
 }
 
 /**
- * Soft-delete a task by setting is_deleted = true.
- * RLS ensures only authorized users (managers or task owner/assignee) can do this.
+ * Delete a task.
+ * RLS ensures only authorized users can perform delete.
  */
 export async function deleteTask(taskId: string): Promise<{ error: Error | null }> {
   try {
     const { error } = await supabase
       .from('tasks')
-      .update({
-        is_deleted: true,
-        updated_at: new Date().toISOString(),
-      })
+      .delete()
       .eq('id', taskId)
 
     if (error) return { error: new Error(error.message) }
@@ -196,11 +203,12 @@ export async function updateTaskStatus(
   status: TaskRow['status']
 ): Promise<{ error: Error | null }> {
   try {
+    const dbStatus = normalizeStatusToDb(status)
     const payload: Record<string, unknown> = {
-      status,
+      status: dbStatus,
       updated_at: new Date().toISOString(),
     }
-    if (status === 'completed') {
+    if (dbStatus === 'completed' || dbStatus === 'complete') {
       payload.completed_at = new Date().toISOString()
     }
 

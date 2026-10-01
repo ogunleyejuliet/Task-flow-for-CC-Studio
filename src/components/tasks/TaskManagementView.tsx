@@ -1,30 +1,31 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useAuth } from '../../../context/AuthContext'
-import { useToast } from '../../Toast/useToast'
+import { useAuth } from '../../context/AuthContext'
+import { useToast } from '../Toast/useToast'
 import {
   fetchTasks,
   fetchTasksForUser,
   updateTaskStatus,
-} from '../../../lib/supabase/tasks'
-import { fetchStaffMembers } from '../../../lib/supabase/staff'
-import { fetchClients } from '../../../lib/supabase/clients'
-import type { TaskWithRelations, ProfileRow, ClientRow } from '../../../lib/supabase/types'
-import type { TaskStatus, TaskPriority } from '../../../types/task'
-import { Button } from '../../Button/Button'
-import { Avatar } from '../../Avatar/Avatar'
-import { StatusBadge } from '../../StatusBadge/StatusBadge'
-import { PriorityBadge } from '../../PriorityBadge/PriorityBadge'
-import { Icon } from '../../Icon/Icon'
-import { EmptyState } from '../../EmptyState/EmptyState'
-import { ErrorState } from '../../ErrorState/ErrorState'
-import { Spinner } from '../../Spinner/Spinner'
-import { Select } from '../../Select/Select'
+} from '../../lib/supabase/tasks'
+import { fetchStaffMembers } from '../../lib/supabase/staff'
+import { fetchClients } from '../../lib/supabase/clients'
+import type { TaskWithRelations, ProfileRow, ClientRow } from '../../lib/supabase/types'
+import type { TaskStatus, TaskPriority } from '../../types/task'
+import { Button } from '../Button/Button'
+import { Avatar } from '../Avatar/Avatar'
+import { StatusBadge } from '../StatusBadge/StatusBadge'
+import { PriorityBadge } from '../PriorityBadge/PriorityBadge'
+import { Icon } from '../Icon/Icon'
+import { EmptyState } from '../EmptyState/EmptyState'
+import { ErrorState } from '../ErrorState/ErrorState'
+import { Spinner } from '../Spinner/Spinner'
+import { Select } from '../Select/Select'
+import { Input } from '../Input/Input'
 import { CreateTaskModal } from './CreateTaskModal'
 import { EditTaskModal } from './EditTaskModal'
 import { DeleteTaskModal } from './DeleteTaskModal'
+import { formatDateLabel, isTaskDueToday, isTaskOverdue } from '../../utils/date'
 import styles from './TaskManagementView.module.css'
 
-// Only show statuses that the existing StatusBadge can handle
 const VALID_STATUSES: TaskStatus[] = ['to-do', 'in-progress', 'completed', 'blocked']
 const VALID_PRIORITIES: TaskPriority[] = ['low', 'medium', 'high', 'urgent']
 
@@ -35,35 +36,28 @@ function isValidPriority(p: string): p is TaskPriority {
   return VALID_PRIORITIES.includes(p as TaskPriority)
 }
 
-const MONTH = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
-function fmtDate(iso: string | null) {
-  if (!iso) return null
-  const d = new Date(`${iso}T00:00:00`)
-  if (isNaN(d.getTime())) return iso
-  return `${MONTH[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`
-}
-
-function isOverdue(iso: string | null, status: string) {
-  if (!iso || status === 'completed') return false
-  const d = new Date(`${iso}T00:00:00`)
-  const today = new Date(); today.setHours(0, 0, 0, 0)
-  return d < today
-}
+export type DashboardTab = 'all' | 'today' | 'in-progress' | 'completed' | 'overdue'
 
 interface Filters {
   status: string
   priority: string
   assignee: string
   client: string
+  dueDateFilter: string
 }
 
-interface Props {
+export interface TaskManagementViewProps {
   /** 'all' shows all tasks (manager); 'my' shows only assigned tasks (staff) */
   scope: 'all' | 'my'
+  searchQuery?: string
+  onSearchChange?: (query: string) => void
 }
 
-export function TaskManagementView({ scope }: Props) {
+export function TaskManagementView({
+  scope,
+  searchQuery = '',
+  onSearchChange,
+}: TaskManagementViewProps) {
   const { user, isManager } = useAuth()
   const toast = useToast()
 
@@ -73,11 +67,29 @@ export function TaskManagementView({ scope }: Props) {
   const [loading, setLoading] = useState(true)
   const [fetchError, setFetchError] = useState<string | null>(null)
 
-  const [filters, setFilters] = useState<Filters>({ status: '', priority: '', assignee: '', client: '' })
+  const [activeTab, setActiveTab] = useState<DashboardTab>('all')
+  const [localSearch, setLocalSearch] = useState(searchQuery)
+  const [filters, setFilters] = useState<Filters>({
+    status: '',
+    priority: '',
+    assignee: '',
+    client: '',
+    dueDateFilter: '',
+  })
+
   const [createOpen, setCreateOpen] = useState(false)
   const [editTask, setEditTask] = useState<TaskWithRelations | null>(null)
   const [deleteTask, setDeleteTask] = useState<TaskWithRelations | null>(null)
   const [statusUpdating, setStatusUpdating] = useState<string | null>(null)
+
+  const effectiveSearch = searchQuery !== undefined ? searchQuery : localSearch
+
+  const handleSearchChange = (val: string) => {
+    setLocalSearch(val)
+    if (onSearchChange) {
+      onSearchChange(val)
+    }
+  }
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -101,7 +113,9 @@ export function TaskManagementView({ scope }: Props) {
     if (clientsResult.data) setClients(clientsResult.data)
   }, [scope, user])
 
-  useEffect(() => { load() }, [load])
+  useEffect(() => {
+    load()
+  }, [load])
 
   const handleStatusChange = async (task: TaskWithRelations, newStatus: string) => {
     setStatusUpdating(task.id)
@@ -112,21 +126,30 @@ export function TaskManagementView({ scope }: Props) {
       toast.error('Could not update status', error.message)
       return
     }
-    setTasks(prev => prev.map(t =>
-      t.id === task.id ? { ...t, status: newStatus, updated_at: new Date().toISOString() } : t
-    ))
+    setTasks((prev) =>
+      prev.map((t) =>
+        t.id === task.id
+          ? {
+              ...t,
+              status: newStatus,
+              updated_at: new Date().toISOString(),
+              completed_at: newStatus === 'completed' ? new Date().toISOString() : t.completed_at,
+            }
+          : t,
+      ),
+    )
   }
 
   const handleCreated = (task: TaskWithRelations) => {
-    setTasks(prev => [task, ...prev])
+    setTasks((prev) => [task, ...prev])
   }
 
   const handleUpdated = (task: TaskWithRelations) => {
-    setTasks(prev => prev.map(t => t.id === task.id ? task : t))
+    setTasks((prev) => prev.map((t) => (t.id === task.id ? task : t)))
   }
 
   const handleDeleted = (taskId: string) => {
-    setTasks(prev => prev.filter(t => t.id !== taskId))
+    setTasks((prev) => prev.filter((t) => t.id !== taskId))
   }
 
   const canEditTask = (task: TaskWithRelations) => {
@@ -139,21 +162,72 @@ export function TaskManagementView({ scope }: Props) {
     return task.creator_id === user?.id || task.assignee_id === user?.id
   }
 
-  // Filter tasks
-  const filtered = tasks.filter(t => {
-    if (filters.status && t.status !== filters.status) return false
-    if (filters.priority && t.priority !== filters.priority) return false
+  function matchesStatus(taskStatus: string, target: 'completed' | 'in-progress' | string): boolean {
+    const s = taskStatus.toLowerCase().trim()
+    if (target === 'completed') return s === 'completed' || s === 'complete'
+    if (target === 'in-progress') return s === 'in-progress' || s === 'in_progress'
+    if (target === 'to-do' || target === 'todo') return s === 'to-do' || s === 'todo' || s === 'to_do'
+    return s === target.toLowerCase().trim()
+  }
+
+  // Dashboard Counts derived from exact authorized active task data
+  const todayCount = tasks.filter((t) => isTaskDueToday(t.due_date) && !matchesStatus(t.status, 'completed')).length
+  const inProgressCount = tasks.filter((t) => matchesStatus(t.status, 'in-progress')).length
+  const completedCount = tasks.filter((t) => matchesStatus(t.status, 'completed')).length
+  const overdueCount = tasks.filter((t) => isTaskOverdue(t.due_date, t.status)).length
+  const totalCount = tasks.length
+
+  // Filter tasks based on active Tab, Dropdown Filters, and Search Query
+  const filtered = tasks.filter((t) => {
+    // 1. Tab View Filter
+    if (activeTab === 'today') {
+      if (!isTaskDueToday(t.due_date) || matchesStatus(t.status, 'completed')) return false
+    } else if (activeTab === 'in-progress') {
+      if (!matchesStatus(t.status, 'in-progress')) return false
+    } else if (activeTab === 'completed') {
+      if (!matchesStatus(t.status, 'completed')) return false
+    } else if (activeTab === 'overdue') {
+      if (!isTaskOverdue(t.due_date, t.status)) return false
+    }
+
+    // 2. Dropdown Filters
+    if (filters.status && !matchesStatus(t.status, filters.status)) return false
+    if (filters.priority && t.priority.toLowerCase() !== filters.priority.toLowerCase()) return false
     if (filters.assignee && t.assignee_id !== filters.assignee) return false
     if (filters.client && t.client_id !== filters.client) return false
+    if (filters.dueDateFilter === 'today' && !isTaskDueToday(t.due_date)) return false
+    if (filters.dueDateFilter === 'overdue' && !isTaskOverdue(t.due_date, t.status)) return false
+
+    // 3. Search Query (Title, Description, Client Name, Assignee Name)
+    if (effectiveSearch.trim()) {
+      const q = effectiveSearch.trim().toLowerCase()
+      const titleMatch = t.title.toLowerCase().includes(q)
+      const descMatch = (t.description || '').toLowerCase().includes(q)
+      const clientMatch = (t.client?.name || '').toLowerCase().includes(q)
+      const assigneeMatch = (t.assignee?.full_name || '').toLowerCase().includes(q)
+      if (!titleMatch && !descMatch && !clientMatch && !assigneeMatch) return false
+    }
+
     return true
   })
 
-  const activeStaff = staff.filter(s => s.account_status === 'active')
+  const activeStaff = staff.filter((s) => s.account_status === 'active')
 
   const setFilter = (key: keyof Filters) => (e: React.ChangeEvent<HTMLSelectElement>) =>
-    setFilters(prev => ({ ...prev, [key]: e.target.value }))
+    setFilters((prev) => ({ ...prev, [key]: e.target.value }))
 
-  const hasFilters = Object.values(filters).some(Boolean)
+  const clearAllFilters = () => {
+    setFilters({
+      status: '',
+      priority: '',
+      assignee: '',
+      client: '',
+      dueDateFilter: '',
+    })
+    handleSearchChange('')
+  }
+
+  const hasFilters = Object.values(filters).some(Boolean) || Boolean(effectiveSearch.trim())
 
   if (loading) {
     return (
@@ -165,39 +239,170 @@ export function TaskManagementView({ scope }: Props) {
   }
 
   if (fetchError) {
-    return (
-      <ErrorState
-        title="Couldn't load tasks"
-        message={fetchError}
-        onRetry={load}
-      />
-    )
+    return <ErrorState title="Couldn't load tasks" message={fetchError} onRetry={load} />
   }
 
   return (
     <div className={styles.root}>
-      {/* Header */}
+      {/* KPI Metric Summary Cards */}
+      <div className={styles.kpiGrid}>
+        <div
+          className={`${styles.kpiCard} ${activeTab === 'today' ? styles.kpiCardActive : ''}`}
+          onClick={() => setActiveTab('today')}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setActiveTab('today')}
+        >
+          <div className={styles.kpiHeader}>
+            <span className={styles.kpiTitle}>Today</span>
+            <span className={`${styles.kpiIcon} ${styles.kpiIconToday}`}>
+              <Icon name="clock" size={18} />
+            </span>
+          </div>
+          <div className={styles.kpiValue}>{todayCount}</div>
+          <div className={styles.kpiSub}>Due today</div>
+        </div>
+
+        <div
+          className={`${styles.kpiCard} ${activeTab === 'in-progress' ? styles.kpiCardActive : ''}`}
+          onClick={() => setActiveTab('in-progress')}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setActiveTab('in-progress')}
+        >
+          <div className={styles.kpiHeader}>
+            <span className={styles.kpiTitle}>In Progress</span>
+            <span className={`${styles.kpiIcon} ${styles.kpiIconInProgress}`}>
+              <Icon name="tasks" size={18} />
+            </span>
+          </div>
+          <div className={styles.kpiValue}>{inProgressCount}</div>
+          <div className={styles.kpiSub}>Active work</div>
+        </div>
+
+        <div
+          className={`${styles.kpiCard} ${activeTab === 'completed' ? styles.kpiCardActive : ''}`}
+          onClick={() => setActiveTab('completed')}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setActiveTab('completed')}
+        >
+          <div className={styles.kpiHeader}>
+            <span className={styles.kpiTitle}>Completed</span>
+            <span className={`${styles.kpiIcon} ${styles.kpiIconCompleted}`}>
+              <Icon name="check" size={18} />
+            </span>
+          </div>
+          <div className={styles.kpiValue}>{completedCount}</div>
+          <div className={styles.kpiSub}>Finished tasks</div>
+        </div>
+
+        <div
+          className={`${styles.kpiCard} ${activeTab === 'overdue' ? styles.kpiCardActive : ''}`}
+          onClick={() => setActiveTab('overdue')}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setActiveTab('overdue')}
+        >
+          <div className={styles.kpiHeader}>
+            <span className={styles.kpiTitle}>Overdue</span>
+            <span className={`${styles.kpiIcon} ${styles.kpiIconOverdue}`}>
+              <Icon name="alert-circle" size={18} />
+            </span>
+          </div>
+          <div className={styles.kpiValue}>{overdueCount}</div>
+          <div className={styles.kpiSub}>Attention required</div>
+        </div>
+      </div>
+
+      {/* Header & Actions */}
       <div className={styles.header}>
         <div className={styles.headerLeft}>
-          <h2 className={styles.heading}>
-            {scope === 'all' ? 'All Tasks' : 'My Tasks'}
-          </h2>
+          <h2 className={styles.heading}>{scope === 'all' ? 'All Workspace Tasks' : 'My Assigned Tasks'}</h2>
           <span className={styles.count}>
             {filtered.length} {filtered.length === 1 ? 'task' : 'tasks'}
           </span>
         </div>
-        <Button
-          variant="primary"
-          size="sm"
-          leadingIcon="plus"
-          onClick={() => setCreateOpen(true)}
-        >
+        <Button variant="primary" size="sm" leadingIcon="plus" onClick={() => setCreateOpen(true)}>
           New task
         </Button>
       </div>
 
-      {/* Filters */}
+      {/* Tabs Navigation Bar */}
+      <div className={styles.tabBar} role="tablist">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'all'}
+          className={`${styles.tabBtn} ${activeTab === 'all' ? styles.tabBtnActive : ''}`}
+          onClick={() => setActiveTab('all')}
+        >
+          All Tasks
+          <span className={`${styles.tabBadge} ${activeTab === 'all' ? styles.tabBadgeActive : ''}`}>
+            {totalCount}
+          </span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'today'}
+          className={`${styles.tabBtn} ${activeTab === 'today' ? styles.tabBtnActive : ''}`}
+          onClick={() => setActiveTab('today')}
+        >
+          Today
+          <span className={`${styles.tabBadge} ${activeTab === 'today' ? styles.tabBadgeActive : ''}`}>
+            {todayCount}
+          </span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'in-progress'}
+          className={`${styles.tabBtn} ${activeTab === 'in-progress' ? styles.tabBtnActive : ''}`}
+          onClick={() => setActiveTab('in-progress')}
+        >
+          In Progress
+          <span className={`${styles.tabBadge} ${activeTab === 'in-progress' ? styles.tabBadgeActive : ''}`}>
+            {inProgressCount}
+          </span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'completed'}
+          className={`${styles.tabBtn} ${activeTab === 'completed' ? styles.tabBtnActive : ''}`}
+          onClick={() => setActiveTab('completed')}
+        >
+          Completed
+          <span className={`${styles.tabBadge} ${activeTab === 'completed' ? styles.tabBadgeActive : ''}`}>
+            {completedCount}
+          </span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'overdue'}
+          className={`${styles.tabBtn} ${activeTab === 'overdue' ? styles.tabBtnActive : ''}`}
+          onClick={() => setActiveTab('overdue')}
+        >
+          Overdue
+          <span className={`${styles.tabBadge} ${activeTab === 'overdue' ? styles.tabBadgeActive : ''}`}>
+            {overdueCount}
+          </span>
+        </button>
+      </div>
+
+      {/* Filter Controls */}
       <div className={styles.filters}>
+        <Input
+          aria-label="Filter tasks by text"
+          leadingIcon="search"
+          placeholder="Filter by title, client, assignee..."
+          value={effectiveSearch}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          className={styles.searchInput}
+        />
+
         <Select
           value={filters.status}
           onChange={setFilter('status')}
@@ -232,8 +437,10 @@ export function TaskManagementView({ scope }: Props) {
             className={styles.filterSelect}
           >
             <option value="">All assignees</option>
-            {activeStaff.map(s => (
-              <option key={s.id} value={s.id}>{s.full_name || s.email}</option>
+            {activeStaff.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.full_name || s.email}
+              </option>
             ))}
           </Select>
         )}
@@ -245,32 +452,40 @@ export function TaskManagementView({ scope }: Props) {
           className={styles.filterSelect}
         >
           <option value="">All clients</option>
-          {clients.map(c => (
-            <option key={c.id} value={c.id}>{c.name}</option>
+          {clients.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
           ))}
         </Select>
 
+        <Select
+          value={filters.dueDateFilter}
+          onChange={setFilter('dueDateFilter')}
+          aria-label="Filter by due date"
+          className={styles.filterSelect}
+        >
+          <option value="">All due dates</option>
+          <option value="today">Due Today</option>
+          <option value="overdue">Overdue</option>
+        </Select>
+
         {hasFilters && (
-          <button
-            type="button"
-            className={styles.clearFilters}
-            onClick={() => setFilters({ status: '', priority: '', assignee: '', client: '' })}
-          >
+          <button type="button" className={styles.clearFilters} onClick={clearAllFilters}>
             <Icon name="close" size={14} aria-hidden="true" />
             Clear
           </button>
         )}
       </div>
 
-      {/* Task table */}
+      {/* Task table & Empty States */}
       {filtered.length === 0 ? (
         tasks.length === 0 ? (
           <EmptyState
             icon="tasks"
             title="No tasks yet"
-            description={scope === 'my'
-              ? "Tasks assigned to you will appear here."
-              : "Create your first task to get started."
+            description={
+              scope === 'my' ? 'Tasks assigned to you will appear here.' : 'Create your first task to get started.'
             }
             action={
               <Button variant="primary" size="sm" leadingIcon="plus" onClick={() => setCreateOpen(true)}>
@@ -278,15 +493,59 @@ export function TaskManagementView({ scope }: Props) {
               </Button>
             }
           />
+        ) : activeTab === 'today' ? (
+          <EmptyState
+            icon="clock"
+            title="No tasks due today"
+            description="You have no tasks scheduled for today."
+            action={
+              <Button variant="secondary" size="sm" onClick={() => setActiveTab('all')}>
+                View all tasks
+              </Button>
+            }
+          />
+        ) : activeTab === 'in-progress' ? (
+          <EmptyState
+            icon="tasks"
+            title="No tasks in progress"
+            description="There are currently no tasks in progress."
+            action={
+              <Button variant="secondary" size="sm" onClick={() => setActiveTab('all')}>
+                View all tasks
+              </Button>
+            }
+          />
+        ) : activeTab === 'completed' ? (
+          <EmptyState
+            icon="check"
+            title="No completed tasks"
+            description="No tasks have been marked as completed yet."
+            action={
+              <Button variant="secondary" size="sm" onClick={() => setActiveTab('all')}>
+                View all tasks
+              </Button>
+            }
+          />
+        ) : activeTab === 'overdue' ? (
+          <EmptyState
+            icon="check-circle"
+            title="No overdue tasks"
+            description="Great work! There are no overdue tasks."
+            action={
+              <Button variant="secondary" size="sm" onClick={() => setActiveTab('all')}>
+                View all tasks
+              </Button>
+            }
+          />
         ) : (
           <EmptyState
             icon="search"
             title="No matching tasks"
-            description="Try adjusting or clearing your filters."
+            description="No tasks match your search query or filter selection."
             action={
-              <button type="button" className={styles.clearFilters} onClick={() => setFilters({ status: '', priority: '', assignee: '', client: '' })}>
+              <Button variant="secondary" size="sm" onClick={clearAllFilters}>
                 Clear filters
-              </button>
+              </Button>
             }
           />
         )
@@ -305,8 +564,8 @@ export function TaskManagementView({ scope }: Props) {
               </tr>
             </thead>
             <tbody>
-              {filtered.map(task => {
-                const overdue = isOverdue(task.due_date, task.status)
+              {filtered.map((task) => {
+                const overdue = isTaskOverdue(task.due_date, task.status)
                 const status = isValidStatus(task.status) ? task.status : 'to-do'
                 const priority = isValidPriority(task.priority) ? task.priority : 'medium'
 
@@ -315,9 +574,7 @@ export function TaskManagementView({ scope }: Props) {
                     <td className={styles.td}>
                       <div className={styles.titleCell}>
                         <span className={styles.taskTitle}>{task.title}</span>
-                        {task.description && (
-                          <span className={styles.taskDesc}>{task.description}</span>
-                        )}
+                        {task.description && <span className={styles.taskDesc}>{task.description}</span>}
                       </div>
                     </td>
 
@@ -343,12 +600,8 @@ export function TaskManagementView({ scope }: Props) {
                     <td className={styles.td}>
                       {task.due_date ? (
                         <span className={overdue ? styles.overdue : styles.dueDate}>
-                          <Icon
-                            name={overdue ? 'alert-circle' : 'clock'}
-                            size={13}
-                            aria-hidden="true"
-                          />
-                          {fmtDate(task.due_date)}
+                          <Icon name={overdue ? 'alert-circle' : 'clock'} size={13} aria-hidden="true" />
+                          {formatDateLabel(task.due_date)}
                         </span>
                       ) : (
                         <span className={styles.unassigned}>—</span>
@@ -369,7 +622,7 @@ export function TaskManagementView({ scope }: Props) {
                             <select
                               className={styles.statusSelect}
                               value={task.status}
-                              onChange={e => handleStatusChange(task, e.target.value)}
+                              onChange={(e) => handleStatusChange(task, e.target.value)}
                               aria-label={`Change status of ${task.title}`}
                             >
                               <option value="to-do">To Do</option>

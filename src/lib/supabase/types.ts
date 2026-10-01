@@ -38,7 +38,7 @@ export interface TaskRow {
   created_at: string | null
   updated_at: string | null
   completed_at: string | null
-  is_deleted: boolean
+  is_deleted?: boolean
 }
 
 /** TaskRow with joined assignee profile and client data, returned by fetchTasks queries. */

@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useAuth } from '../../../context/AuthContext'
-import { useToast } from '../../Toast/useToast'
-import { updateTask, type UpdateTaskParams } from '../../../lib/supabase/tasks'
-import type { TaskWithRelations, ClientRow, ProfileRow } from '../../../lib/supabase/types'
-import { Modal } from '../../Modal/Modal'
-import { Input } from '../../Input/Input'
-import { Select } from '../../Select/Select'
-import { Button } from '../../Button/Button'
+import { useAuth } from '../../context/AuthContext'
+import { useToast } from '../Toast/useToast'
+import { updateTask, type UpdateTaskParams } from '../../lib/supabase/tasks'
+import type { TaskWithRelations, ClientRow, ProfileRow } from '../../lib/supabase/types'
+import { Modal } from '../Modal/Modal'
+import { Input } from '../Input/Input'
+import { Select } from '../Select/Select'
+import { Button } from '../Button/Button'
 import styles from './CreateTaskModal.module.css'
 
 export interface EditTaskModalProps {
@@ -51,7 +51,7 @@ export function EditTaskModal({
   const { isManager, user } = useAuth()
   const toast = useToast()
   const [form, setForm] = useState<FormState>(() => task ? taskToForm(task) : {
-    title: '', description: '', status: 'to-do', priority: 'medium',
+    title: '', description: '', status: 'todo', priority: 'medium',
     due_date: '', assignee_id: '', client_id: '',
   })
   const [errors, setErrors] = useState<Partial<FormState>>({})
@@ -162,8 +162,8 @@ export function EditTaskModal({
 
         <div className={styles.fieldGroup}>
           <Select label="Status" required value={form.status} onChange={set('status')}>
-            <option value="to-do">To Do</option>
-            <option value="in-progress">In Progress</option>
+            <option value="todo">To Do</option>
+            <option value="in_progress">In Progress</option>
             <option value="completed">Completed</option>
             <option value="blocked">Blocked</option>
           </Select>

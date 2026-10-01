@@ -1,16 +1,15 @@
 import { useState, useCallback } from 'react'
-import { useAuth } from '../../../context/AuthContext'
-import { useToast } from '../../Toast/useToast'
+import { useAuth } from '../../context/AuthContext'
+import { useToast } from '../Toast/useToast'
 import {
   createTask,
   type CreateTaskParams,
-} from '../../../lib/supabase/tasks'
-import type { TaskWithRelations } from '../../../lib/supabase/types'
-import { Modal } from '../../Modal/Modal'
-import { Input } from '../../Input/Input'
-import { Select } from '../../Select/Select'
-import { Button } from '../../Button/Button'
-import type { ClientRow, ProfileRow } from '../../../lib/supabase/types'
+} from '../../lib/supabase/tasks'
+import type { TaskWithRelations, ClientRow, ProfileRow } from '../../lib/supabase/types'
+import { Modal } from '../Modal/Modal'
+import { Input } from '../Input/Input'
+import { Select } from '../Select/Select'
+import { Button } from '../Button/Button'
 import styles from './CreateTaskModal.module.css'
 
 export interface CreateTaskModalProps {
@@ -34,7 +33,7 @@ interface FormState {
 const INITIAL: FormState = {
   title: '',
   description: '',
-  status: 'to-do',
+  status: 'todo',
   priority: 'medium',
   due_date: '',
   assignee_id: '',
@@ -151,8 +150,8 @@ export function CreateTaskModal({
             onChange={set('status')}
             error={errors.status}
           >
-            <option value="to-do">To Do</option>
-            <option value="in-progress">In Progress</option>
+            <option value="todo">To Do</option>
+            <option value="in_progress">In Progress</option>
             <option value="completed">Completed</option>
             <option value="blocked">Blocked</option>
           </Select>
